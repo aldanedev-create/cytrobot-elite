@@ -1,0 +1,23 @@
+import secrets
+from datetime import datetime, timedelta
+
+def generate_token(length=32):
+    """Generate a secure random token"""
+    return secrets.token_urlsafe(length)
+
+def generate_otp(length=6):
+    """Generate numeric OTP"""
+    return ''.join(str(secrets.randbelow(10)) for _ in range(length))
+
+def verify_token(token, stored_token, expires_at):
+    """Verify token validity"""
+    if not token or not stored_token:
+        return False
+    
+    if token != stored_token:
+        return False
+    
+    if expires_at and expires_at < datetime.utcnow():
+        return False
+    
+    return True

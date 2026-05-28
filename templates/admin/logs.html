@@ -1,0 +1,63 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Activity Logs - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Admin</a></li>
+                        <li class="breadcrumb-item active">Activity Logs</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard-content">
+                    <h3><i class="fas fa-history"></i> Admin Activity Logs</h3>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Admin</th>
+                                    <th>Action Type</th>
+                                    <th>Description</th>
+                                    <th>IP Address</th>
+                                    <th>User Agent</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                <tr>
+                                    <td>{{ log.id }}</td>
+                                    <td>{{ log.admin.username }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ log.action_type }}</span>
+                                    </td>
+                                    <td><small>{{ log.description }}</small></td>
+                                    <td><code>{{ log.ip_address or 'N/A' }}</code></td>
+                                    <td><small>{{ log.user_agent[:30] if log.user_agent else 'N/A' }}...</small></td>
+                                    <td><small>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No logs found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

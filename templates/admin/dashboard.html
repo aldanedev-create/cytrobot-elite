@@ -1,0 +1,174 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Admin Dashboard - CryptoBot{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Admin Panel</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="dashboard-sidebar">
+                    <div class="nav flex-column">
+                        <a class="nav-link active" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Overview
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-users"></i> Users
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_trades') }}">
+                            <i class="fas fa-chart-line"></i> Trades/Signals
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_pairs') }}">
+                            <i class="fas fa-exchange-alt"></i> Trading Pairs
+                        </a>
+                        <a class="nav-link" href="{{ url_for('admin_payments') }}">
+                            <i class="fas fa-credit-card"></i> Payments
+                        </a>
+                        {% if current_user.role == 'super_admin' %}
+                        <a class="nav-link" href="{{ url_for('admin_logs') }}">
+                            <i class="fas fa-history"></i> Activity Logs
+                        </a>
+                        <a class="nav-link" href="{{ url_for('security_events') }}">
+                            <i class="fas fa-shield-alt"></i> Security Events
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="dashboard-content">
+                    <h3>Admin Dashboard</h3>
+                    
+                    <!-- Statistics -->
+                    <div class="row mt-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-2x"></i>
+                                    <h3>{{ stats.total_users }}</h3>
+                                    <p>Total Users</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                    <h3>{{ stats.active_subscriptions }}</h3>
+                                    <p>Active Subscriptions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-chart-line fa-2x"></i>
+                                    <h3>{{ stats.total_trades }}</h3>
+                                    <p>Total Trades</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                    <h3>${{ "%.2f"|format(stats.revenue) }}</h3>
+                                    <p>Total Revenue</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Revenue Chart -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Revenue Overview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="revenueChart" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Recent Activity</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Time</th>
+                                                    <th>Action</th>
+                                                    <th>User</th>
+                                                    <th>IP Address</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for log in logs %}
+                                                <tr>
+                                                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                                    <td>{{ log.action_type }}</td>
+                                                    <td>{{ log.admin.username }}</td>
+                                                    <td>{{ log.ip_address or 'N/A' }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Revenue Chart
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'Revenue ($)',
+                data: [125, 250, 375, 500],
+                borderColor: '#6c5ce7',
+                backgroundColor: 'rgba(108, 92, 231, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Complete Payment - CryptoBot{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-content">
+            <h3><i class="fas fa-credit-card"></i> Complete Payment</h3>
+            <p class="text-muted">Transaction <code>{{ payment.transaction_id }}</code></p>
+
+            <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Card Payment</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Pay securely with Visa or Mastercard through a hosted gateway such as Fygaro. Your subscription activates automatically when the gateway confirms payment.</p>
+                            <p><strong>Amount:</strong> ${{ "%.2f"|format(payment.amount) }} {{ payment.currency }}</p>
+                            <a class="btn btn-primary w-100" href="#" aria-disabled="true">Continue to Fygaro</a>
+                            <small class="text-muted d-block mt-2">Add your live Fygaro checkout URL/API credentials before accepting real card payments.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">Bank Transfer</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Supported banks: NCB, JMMB, and Scotiabank. Submit your transfer reference after sending payment.</p>
+                            <form method="POST" action="{{ url_for('bank_transfer_payment', transaction_id=payment.transaction_id) }}">
+                                <div class="form-group">
+                                    <label for="bank">Bank</label>
+                                    <select class="form-control" id="bank" name="bank" required>
+                                        <option value="">Choose bank</option>
+                                        <option value="NCB">NCB</option>
+                                        <option value="JMMB">JMMB</option>
+                                        <option value="Scotiabank">Scotiabank</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bank_reference">Transfer Reference</label>
+                                    <input class="form-control" id="bank_reference" name="bank_reference" required>
+                                </div>
+                                <button class="btn btn-outline-primary w-100" type="submit">Submit Transfer Reference</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-warning mt-4">
+                This website should use a payment gateway provider for card processing. It should not connect directly to NCB, JMMB, or Scotiabank core banking systems.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Dashboard - CryptoBot{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="dashboard-sidebar">
+                    <div class="text-center mb-4">
+                        <div class="user-avatar mx-auto mb-2">{{ current_user.username[:1]|upper }}</div>
+                        <h5>{{ current_user.username }}</h5>
+                        <span class="badge bg-primary">{{ current_user.role|title }}</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="nav flex-column">
+                        <a class="nav-link active" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="{{ url_for('account') }}">
+                            <i class="fas fa-user"></i> Account
+                        </a>
+                        <a class="nav-link" href="{{ url_for('signals') }}">
+                            <i class="fas fa-chart-line"></i> Signals
+                        </a>
+                        {% if current_user.role in ['super_admin', 'admin'] %}
+                        <hr>
+                        <h6 class="text-muted mt-3">Admin Section</h6>
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-crown"></i> Admin Panel
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="dashboard-content">
+                    <h3>Welcome back, {{ current_user.username }}!</h3>
+                    
+                    <!-- Subscription Status -->
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        {% if current_user.subscription_status == 'active' %}
+                            Subscription: <strong>Active</strong> - Premium Access
+                        {% elif current_user.subscription_status == 'demo' %}
+                            Demo Mode: Expires on {{ current_user.demo_expiry.strftime('%Y-%m-%d') if current_user.demo_expiry else 'soon' }}
+                            <a href="#subscribe" class="alert-link">Upgrade to Premium</a>
+                        {% else %}
+                            No active subscription. <a href="#subscribe" class="alert-link">Subscribe now</a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Statistics -->
+                    <div class="row mt-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-chart-line fa-2x"></i>
+                                    <h3>{{ signals|length }}</h3>
+                                    <p>Active Signals</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                    <h3>{{ recent_signals|length }}</h3>
+                                    <p>Signals Received</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <i class="fab fa-telegram fa-2x"></i>
+                                    <h3>{% if current_user.telegram_chat_id %}Connected{% else %}Not Set{% endif %}</h3>
+                                    <p>Telegram Status</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <i class="fas fa-shield-alt fa-2x"></i>
+                                    <h3>{% if current_user.twofa_enabled %}Enabled{% else %}Disabled{% endif %}</h3>
+                                    <p>2FA Status</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Signals -->
+                    <h4 class="mt-5">Active Trading Signals</h4>
+                    <div class="signals-list">
+                        {% for signal in signals %}
+                        <div class="signal-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <strong>{{ signal.pair }}</strong>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="signal-type-{{ signal.signal_type|lower }}">
+                                        {{ signal.signal_type }}
+                                    </span>
+                                </div>
+                                <div class="col-md-4">
+                                    <small>Entry: {{ signal.entry_condition[:50] }}{% if signal.entry_condition|length > 50 %}...{% endif %}</small>
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    <small class="text-muted">{{ signal.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                            </div>
+                            {% if signal.tp or signal.sl %}
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <small>TP: {{ signal.tp if signal.tp else 'N/A' }} | SL: {{ signal.sl if signal.sl else 'N/A' }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">No active signals at the moment.</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Recent Signals History -->
+                    <h4 class="mt-5">Recent Signal History</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Pair</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for history in recent_signals %}
+                                <tr>
+                                    <td>{{ history.sent_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ history.trade.pair if history.trade else 'N/A' }}</td>
+                                    <td>
+                                        {% if history.trade %}
+                                        <span class="signal-type-{{ history.trade.signal_type|lower }}">{{ history.trade.signal_type }}</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="badge bg-success">Delivered</span></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No signal history yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Subscription Section -->
+                    <div id="subscribe" class="subscription-section mt-5">
+                        <h4>Upgrade Your Plan</h4>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Basic Plan</h5>
+                                        <h3>$5/month</h3>
+                                        <ul>
+                                            <li>Unlimited signals</li>
+                                            <li>Telegram delivery</li>
+                                            <li>Email notifications</li>
+                                            <li>Priority support</li>
+                                            <li>Visa/Mastercard via payment gateway</li>
+                                            <li>NCB, JMMB, and Scotiabank transfer support</li>
+                                        </ul>
+                                        <form method="POST" action="{{ url_for('subscribe') }}">
+                                            <input type="hidden" name="plan" value="basic">
+                                            <div class="mb-3">
+                                                <input type="text" name="discount_code" class="form-control" placeholder="Discount Code (optional)">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">Subscribe Now</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Demo Plan</h5>
+                                        <h3>Free</h3>
+                                        <p>5 days trial</p>
+                                        <ul>
+                                            <li>Limited signals</li>
+                                            <li>Basic features</li>
+                                            <li>Email support</li>
+                                        </ul>
+                                        <form method="POST" action="{{ url_for('subscribe') }}">
+                                            <input type="hidden" name="plan" value="demo">
+                                            <button type="submit" class="btn btn-outline-primary w-100">Try Demo</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/trading.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Support - CryptoBot{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-content">
+            <h3><i class="fas fa-headset"></i> Support Center</h3>
+            <p class="text-muted">Get help with accounts, subscriptions, payments, trading signals, Telegram setup, and password resets.</p>
+
+            <div class="row g-3 mt-3">
+                {% for suggestion in suggestions %}
+                <div class="col-md-4">
+                    <button class="btn btn-outline-primary w-100 support-suggestion" type="button" data-question="{{ suggestion }}">
+                        {{ suggestion }}
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="alert alert-info mt-4">
+                The chat widget is available in the bottom-right corner on this page, the homepage, and the dashboard.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

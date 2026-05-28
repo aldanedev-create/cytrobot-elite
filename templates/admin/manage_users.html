@@ -1,0 +1,108 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Manage Users - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Admin</a></li>
+                        <li class="breadcrumb-item active">Manage Users</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard-content">
+                    <h3><i class="fas fa-users"></i> User Management</h3>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Subscription</th>
+                                    <th>2FA</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        <span class="badge {% if user.role == 'super_admin' %}bg-danger{% elif user.role == 'admin' %}bg-warning{% else %}bg-info{% endif %}">
+                                            {{ user.role|upper }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if user.subscription_status == 'active' %}bg-success{% elif user.subscription_status == 'demo' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ user.subscription_status|upper }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if user.twofa_enabled %}
+                                            <i class="fas fa-check-circle text-success"></i> Enabled
+                                        {% else %}
+                                            <i class="fas fa-times-circle text-danger"></i> Disabled
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.is_blocked %}
+                                            <span class="badge bg-danger">Blocked</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><small>{{ user.created_at.strftime('%Y-%m-%d') }}</small></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            {% if current_user.role == 'super_admin' %}
+                                                {% if user.is_blocked %}
+                                                <form method="POST" action="{{ url_for('unblock_user', user_id=user.id) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-success" onclick="return confirm('Unblock this user?')">
+                                                        <i class="fas fa-unlock"></i>
+                                                    </button>
+                                                </form>
+                                                {% else %}
+                                                <form method="POST" action="{{ url_for('block_user', user_id=user.id) }}" style="display: inline;">
+                                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Block this user?')">
+                                                        <i class="fas fa-lock"></i>
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                                
+                                                {% if user.role != 'super_admin' %}
+                                                <form method="POST" action="{{ url_for('change_user_role', user_id=user.id) }}" style="display: inline;">
+                                                    <select name="role" onchange="this.form.submit()" class="form-select form-select-sm" style="width: auto; display: inline-block;">
+                                                        <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                                                        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                                    </select>
+                                                </form>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

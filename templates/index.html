@@ -1,0 +1,131 @@
+{% extends "includes/header.html" %}
+
+{% block title %}CryptoBot - Automated Trading Signals{% endblock %}
+
+{% block content %}
+    
+    <header class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow">Real-time crypto alerts</span>
+                    <h1 class="display-4 fw-bold">Automated trading signals without the noise</h1>
+                    <p class="lead">Track active setups, technical triggers, and delivery history from one focused dashboard, with alerts sent directly to Telegram.</p>
+                    <div class="hero-actions">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Start Free Demo</a>
+                        <a href="#features" class="btn btn-outline-light btn-lg">View Features</a>
+                    </div>
+                </div>
+                <div class="market-visual" aria-hidden="true">
+                    <div class="ticker-row"><span>BTC/USDT</span><strong class="text-success">+2.4%</strong></div>
+                    <div class="chart-bars">
+                        <span style="height: 38%"></span><span style="height: 62%"></span><span style="height: 48%"></span><span style="height: 74%"></span><span style="height: 55%"></span><span style="height: 86%"></span><span style="height: 68%"></span>
+                    </div>
+                    <div class="signal-preview">
+                        <span class="signal-type-buy">BUY</span>
+                        <div>
+                            <strong>EMA crossover confirmed</strong>
+                            <small>TP 3.2% / SL 1.1%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Key Features</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                        <h4>Automated Trading Engine</h4>
+                        <p>Advanced algorithms using RSI, EMA, and MACD to identify profitable trading opportunities.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fab fa-telegram fa-3x text-primary mb-3"></i>
+                        <h4>Telegram Integration</h4>
+                        <p>Instant signal delivery to your Telegram with entry prices, stop loss, and take profit levels.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                        <h4>Enterprise Security</h4>
+                        <p>2FA authentication, SIEM monitoring, and role-based access control for maximum security.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h4>Real-time Market Data</h4>
+                        <p>Live price feeds and technical indicators for accurate signal generation.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-history fa-3x text-primary mb-3"></i>
+                        <h4>Signal History</h4>
+                        <p>Track all your signals with detailed performance metrics and analytics.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <i class="fas fa-percent fa-3x text-primary mb-3"></i>
+                        <h4>Discount System</h4>
+                        <p>Special discount codes and promo offers for subscribers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Simple Pricing</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="pricing-card">
+                        <div class="card-header">
+                            <h3>Demo</h3>
+                            <h2 class="price">Free</h2>
+                            <p>5 days trial</p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Limited signals</li>
+                                <li><i class="fas fa-check"></i> Telegram delivery</li>
+                                <li><i class="fas fa-check"></i> Basic support</li>
+                            </ul>
+                            <a href="{{ url_for('register') }}" class="btn btn-outline-primary w-100">Try Demo</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="pricing-card featured">
+                        <div class="popular-badge">Most Popular</div>
+                        <div class="card-header">
+                            <h3>Basic Plan</h3>
+                            <h2 class="price">$5 <span>/month</span></h2>
+                            <p>Best for active traders</p>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Unlimited signals</li>
+                                <li><i class="fas fa-check"></i> Priority delivery</li>
+                                <li><i class="fas fa-check"></i> Email notifications</li>
+                                <li><i class="fas fa-check"></i> Premium support</li>
+                                <li><i class="fas fa-check"></i> Advanced analytics</li>
+                            </ul>
+                            <a href="{{ url_for('register') }}" class="btn btn-primary w-100">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+    

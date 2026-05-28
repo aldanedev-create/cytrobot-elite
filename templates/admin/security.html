@@ -1,0 +1,77 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Security Events - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Admin</a></li>
+                        <li class="breadcrumb-item active">Security Events</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard-content">
+                    <h3><i class="fas fa-shield-alt"></i> SIEM Security Events</h3>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> This page shows all security-related events detected by the SIEM system.
+                    </div>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Event Type</th>
+                                    <th>Severity</th>
+                                    <th>Description</th>
+                                    <th>IP Address</th>
+                                    <th>User</th>
+                                    <th>Resolved</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for event in events %}
+                                <tr>
+                                    <td>{{ event.id }}</td>
+                                    <td><code>{{ event.event_type }}</code></td>
+                                    <td>
+                                        <span class="badge {% if event.severity == 'critical' %}bg-danger{% elif event.severity == 'warning' %}bg-warning{% else %}bg-info{% endif %}">
+                                            {{ event.severity|upper }}
+                                        </span>
+                                    </td>
+                                    <td><small>{{ event.description }}</small></td>
+                                    <td><code>{{ event.ip_address or 'N/A' }}</code></td>
+                                    <td>{{ event.user.username if event.user else 'N/A' }}</td>
+                                    <td>
+                                        {% if event.resolved %}
+                                            <span class="badge bg-success">Resolved</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><small>{{ event.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center">No security events found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,268 @@
+/* Admin Panel Specific Styles */
+
+.admin-sidebar {
+    background: linear-gradient(180deg, #2c3e50 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.admin-sidebar .nav-link {
+    color: #ecf0f1;
+    padding: 12px 20px;
+    margin: 5px 0;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.admin-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.admin-sidebar .nav-link.active {
+    background: #6c5ce7;
+    color: white;
+}
+
+.admin-sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+.admin-stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.admin-stat-card .stat-icon {
+    font-size: 2.5rem;
+    color: #6c5ce7;
+    float: right;
+}
+
+.admin-stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.admin-stat-card .stat-label {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.admin-table-container {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    background: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.admin-table td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.admin-table tr:hover {
+    background: #f8f9fa;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.action-btn-primary {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+}
+
+.action-btn-danger {
+    background: #d63031;
+    color: white;
+    border: none;
+}
+
+.action-btn-warning {
+    background: #fdcb6e;
+    color: #333;
+    border: none;
+}
+
+.action-btn-success {
+    background: #00b894;
+    color: white;
+    border: none;
+}
+
+.action-btn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.filter-section {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.filter-section .form-control,
+.filter-section .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.pagination .page-item .page-link {
+    border-radius: 8px;
+    color: #6c5ce7;
+}
+
+.pagination .page-item.active .page-link {
+    background: #6c5ce7;
+    border-color: #6c5ce7;
+    color: white;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-executed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.role-badge-super_admin {
+    background: #c82333;
+    color: white;
+}
+
+.role-badge-admin {
+    background: #fd7e14;
+    color: white;
+}
+
+.role-badge-user {
+    background: #17a2b8;
+    color: white;
+}
+
+/* Charts Container */
+.charts-container {
+    margin-top: 30px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.chart-card h5 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        min-height: auto;
+        margin-bottom: 20px;
+    }
+    
+    .admin-stat-card .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .admin-table {
+        font-size: 0.85rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Dark Mode Support */
+.dark-theme .admin-stat-card,
+.dark-theme .admin-table-container,
+.dark-theme .filter-section,
+.dark-theme .chart-card {
+    background: #2d2d2d;
+    color: #e0e0e0;
+}
+
+.dark-theme .admin-table th {
+    background: #3d3d3d;
+    color: #e0e0e0;
+    border-bottom-color: #4d4d4d;
+}
+
+.dark-theme .admin-table td {
+    border-bottom-color: #4d4d4d;
+}
+
+.dark-theme .admin-table tr:hover {
+    background: #3d3d3d;
+}

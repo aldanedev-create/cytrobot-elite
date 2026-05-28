@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CryptoBot{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/chatbot.css') }}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('index') }}">
+                <i class="fas fa-chart-line"></i> CryptoBot
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if current_user.is_authenticated %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account') }}">
+                            <i class="fas fa-user"></i> Account
+                        </a>
+                    </li>
+                    {% if current_user.role in ['super_admin', 'admin'] %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-crown"></i> Admin
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-3" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="flash-container">
+        <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <button class="chatbot-launcher" type="button" aria-label="Open support chat" data-chatbot-launcher>
+        <i class="fas fa-robot"></i>
+    </button>
+    <section class="chatbot-panel" aria-label="Customer service chat" data-chatbot-panel>
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">
+                <img src="{{ url_for('static', filename='images/bot-avatar.png') }}" alt="">
+            </div>
+            <div>
+                <strong>CryptoBot Support</strong>
+                <div><small>Account, payments, Telegram, trading help</small></div>
+            </div>
+            <button class="chatbot-close" type="button" aria-label="Close support chat" data-chatbot-close>
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" data-chatbot-messages>
+            <div class="chat-message bot">Hi, I can help with account help, subscription issues, payment questions, trading bot questions, Telegram setup, and password resets.</div>
+        </div>
+        <div class="chatbot-faqs" data-chatbot-faqs>
+            <button class="chatbot-faq" type="button">How do I subscribe?</button>
+            <button class="chatbot-faq" type="button">How do I connect Telegram?</button>
+            <button class="chatbot-faq" type="button">What does BUY signal mean?</button>
+        </div>
+        <div class="chatbot-ticket" data-chatbot-ticket>
+            <form data-chatbot-ticket-form>
+                {% if not current_user.is_authenticated %}
+                <input class="form-control mb-2" type="email" name="email" placeholder="Email for follow-up">
+                {% endif %}
+                <input class="form-control mb-2" type="text" name="subject" placeholder="Ticket subject" value="Website support request">
+                <textarea class="form-control mb-2" name="message" rows="3" placeholder="Describe the issue" required></textarea>
+                <button class="btn btn-outline-primary btn-sm" type="submit">Open Ticket</button>
+            </form>
+        </div>
+        <div class="px-3 pb-2">
+            <button class="btn btn-link btn-sm p-0" type="button" data-chatbot-ticket-toggle>Open a support ticket</button>
+        </div>
+        <form class="chatbot-form" data-chatbot-form>
+            <input class="chatbot-input" type="text" placeholder="Ask a question..." autocomplete="off" data-chatbot-input>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </section>
+
+  <footer class="footer bg-dark text-white mt-5 py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5><i class="fas fa-chart-line"></i> CryptoBot</h5>
+                <p>Professional crypto trading signals delivered in real-time via Telegram.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('dashboard') }}" class="text-white-50">Dashboard</a></li>
+                    <li><a href="{{ url_for('account') }}" class="text-white-50">Account</a></li>
+                    <li><a href="{{ url_for('signals') }}" class="text-white-50">Signal History</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('index') }}#features" class="text-white-50">Features</a></li>
+                    <li><a href="{{ url_for('index') }}#pricing" class="text-white-50">Pricing</a></li>
+                    <li><a href="{{ url_for('login') }}" class="text-white-50">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Legal</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white-50">Terms of Service</a></li>
+                    <li><a href="#" class="text-white-50">Privacy Policy</a></li>
+                    <li><a href="#" class="text-white-50">Risk Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            <p class="mb-0">&copy; {{ current_year }} CryptoBot. All rights reserved.</p>
+            <small class="text-white-50">Disclaimer: Trading cryptocurrencies involves substantial risk. Past performance is not indicative of future results.</small>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

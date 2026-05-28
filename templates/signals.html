@@ -1,0 +1,60 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Signal History - CryptoBot{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="dashboard-content">
+                    <h3><i class="fas fa-chart-line"></i> Signal History</h3>
+                    
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pair</th>
+                                    <th>Type</th>
+                                    <th>Entry Condition</th>
+                                    <th>TP</th>
+                                    <th>SL</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for signal in signals %}
+                                <tr>
+                                    <td>{{ signal.id }}</td>
+                                    <td><strong>{{ signal.pair }}</strong></td>
+                                    <td>
+                                        <span class="signal-type-{{ signal.signal_type|lower }}">
+                                            {{ signal.signal_type }}
+                                        </span>
+                                    </td>
+                                    <td><small>{{ signal.entry_condition[:60] }}{% if signal.entry_condition|length > 60 %}...{% endif %}</small></td>
+                                    <td>{{ signal.tp if signal.tp else 'N/A' }}</td>
+                                    <td>{{ signal.sl if signal.sl else 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge {% if signal.status == 'executed' %}bg-success{% elif signal.status == 'pending' %}bg-warning{% elif signal.status == 'cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {{ signal.status|upper }}
+                                        </span>
+                                    </td>
+                                    <td><small>{{ signal.created_at.strftime('%Y-%m-%d %H:%M') }}</small></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center">No signals found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

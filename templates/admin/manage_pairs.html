@@ -1,0 +1,84 @@
+{% extends "includes/header.html" %}
+
+{% block title %}Manage Trading Pairs - Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Admin</a></li>
+                        <li class="breadcrumb-item active">Trading Pairs</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="dashboard-content">
+                    <h4><i class="fas fa-plus"></i> Add New Trading Pair</h4>
+                    <form method="POST" action="{{ url_for('add_pair') }}">
+                        <div class="form-group">
+                            <label for="pair_name">Pair Name</label>
+                            <input type="text" class="form-control" id="pair_name" name="pair_name" required placeholder="e.g., BTC/USDT">
+                            <small class="form-text">Format: SYMBOL/USDT (e.g., BTC/USDT, ETH/USDT)</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add Pair</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="dashboard-content">
+                    <h4><i class="fas fa-exchange-alt"></i> Active Trading Pairs</h4>
+                    
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pair Name</th>
+                                    <th>Status</th>
+                                    <th>Added</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pair in pairs %}
+                                <tr>
+                                    <td>{{ pair.id }}</td>
+                                    <td><strong>{{ pair.pair_name }}</strong></td>
+                                    <td>
+                                        {% if pair.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><small>{{ pair.created_at.strftime('%Y-%m-%d') }}</small></td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('toggle_pair', pair_id=pair.id) }}" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm {% if pair.is_active %}btn-warning{% else %}btn-success{% endif %}" 
+                                                    onclick="return confirm('Toggle pair status?')">
+                                                {% if pair.is_active %}
+                                                    <i class="fas fa-pause"></i> Deactivate
+                                                {% else %}
+                                                    <i class="fas fa-play"></i> Activate
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
